@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+SQLLab
+{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-section">
+
+            <div class="sidebar-heading">
+                DATASETS
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="load_sample"
+                >
+
+                <button
+                    type="submit"
+                    class="sidebar-btn"
+                >
+                    Load Sample Data
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+                <div class="upload-box">
+
+                    <div class="upload-title">
+                        Upload CSV Files
+                    </div>
+
+                    <div class="upload-subtitle">
+                        Import one or more datasets
+                    </div>
+
+                    <input
+                        type="file"
+                        name="csv_files"
+                        multiple
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="upload"
+                    class="sidebar-btn upload-btn"
+                >
+                    Upload
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <div class="sidebar-heading">
+                SCHEMA EXPLORER
+            </div>
+
+            <div class="schema-tree">
+
+                {% for table, columns in schema.items %}
+
+                <details
+                    class="schema-item"
+                    open
+                >
+
+                    <summary>
+                        {{ table }}
+                    </summary>
+
+                    <div class="schema-columns">
+
+                        {% for column in columns %}
+
+                        <div class="schema-column">
+
+                            {{ column }}
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="action"
+                            value="delete"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="table_name"
+                            value="{{ table }}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="delete-table-btn"
+                        >
+                            Delete Table
+                        </button>
+
+                    </form>
+
+                </details>
+
+                {% empty %}
+
+                <div class="empty-schema">
+
+                    No tables available
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN AREA -->
+
+    <section class="editor-section">
+
+        <!-- STATS BAR -->
+
+        <div class="stats-bar">
+
+            <div class="stat-item">
+
+                SQLite
+
+            </div>
+
+            <div class="stat-item">
+
+                {{ schema|length }} Tables
+
+            </div>
+
+            <div class="stat-item success">
+
+                Ready
+
+            </div>
+
+        </div>
+
+        <!-- QUERY PANEL -->
+
+        <div class="editor-panel">
+
+            <div class="editor-header">
+
+                <div class="editor-tab">
+
+                    query.sql
+
+                </div>
+
+            </div>
+
+            <form
+                method="POST"
+                id="query-form"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="query"
+                >
+
+                <input
+                    type="hidden"
+                    name="query"
+                    id="query-input"
+                >
+
+                <div id="editor"></div>
+
+                <script>
+                window.initialQuery = `{{ query|default:''|escapejs }}`;
+                </script>
+
+                <div class="editor-actions">
+
+                    <button
+                        type="submit"
+                        class="run-btn"
+                    >
+                        ▶ Run Query
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- RESULTS -->
+
+        <div class="results-panel">
+
+            <div class="results-header">
+
+                <h2>
+                    Results
+                </h2>
+
+            </div>
+
+            {% if error %}
+
+            <div class="error-panel">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+            {% if result %}
+
+            <div class="table-wrapper">
+
+                {% autoescape off %}
+                {{ result }}
+                {% endautoescape %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-results">
+
+                <div class="empty-results-title">
+
+                    No Results Yet
+
+                </div>
+
+                <div class="empty-results-text">
+
+                    Upload a dataset and execute a SQL query.
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'playground/js/editor.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            SQLLab
+        {% endblock %}
+    </title>
+
+    <!-- Fonts -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'playground/css/style.css' %}"
+    >
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <div class="logo-badge">
+                    SQL
+                </div>
+
+                <div class="logo-content">
+
+                    <h1>
+                        SQLLab
+                    </h1>
+
+                    <span>
+                        Interactive SQL Playground
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="status-pill">
+
+                    <span class="status-dot"></span>
+
+                    SQLite Ready
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- MAIN CONTENT -->
+
+        <main class="app-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+    </div>
+
+    <!-- MONACO EDITOR -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+
+</html>
