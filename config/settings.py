@@ -120,6 +120,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'playground' / 'static',
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
